@@ -1,7 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { supabase } from "@/lib/supabase"
+import { useState } from "react"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -65,34 +64,27 @@ const statusColors = {
 export default function TrackPage() {
   const [searchId, setSearchId] = useState("")
   const [selectedComplaint, setSelectedComplaint] = useState<any | null>(null)
-  const [showAll, setShowAll] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [complaints, setComplaints] = useState<any[]>([])
-
-  useEffect(() => {
-    // Optionally fetch all user complaints if they are logged in
-    // For now, we only show search results
-  }, [])
+  const [notFound, setNotFound] = useState(false)
 
   const handleSearch = async () => {
     if (!searchId) return
     setIsLoading(true)
+    setNotFound(false)
     try {
-      const { data, error } = await supabase
-        .from("complaints")
-        .select("*")
-        .or(`id.eq.${searchId},id.ilike.%${searchId}%`)
-        .single()
+      const response = await fetch(`/api/complaints/${encodeURIComponent(searchId.trim())}`)
+      const data = await response.json()
 
-      if (error) {
-        console.error("Error finding complaint:", error)
-        setSelectedComplaint(null)
+      if (data.success && data.data) {
+        setSelectedComplaint(data.data)
       } else {
-        setSelectedComplaint(data)
-        setShowAll(false)
+        setSelectedComplaint(null)
+        setNotFound(true)
       }
     } catch (error) {
       console.error("Search failed:", error)
+      setSelectedComplaint(null)
+      setNotFound(true)
     } finally {
       setIsLoading(false)
     }
@@ -128,71 +120,31 @@ export default function TrackPage() {
           </div>
         </div>
         <div className="mx-auto max-w-6xl px-4 py-12">
+          {/* Not Found */}
+          {notFound && !selectedComplaint && (
+            <div className="mb-8 rounded-lg border border-destructive/20 bg-destructive/5 px-6 py-4 text-center text-sm text-destructive">
+              No complaint found with ID <strong>{searchId}</strong>. Please check the ID and try again.
+            </div>
+          )}
+
           {/* Selected Complaint Detail */}
-          {selectedComplaint && !showAll && (
+          {selectedComplaint && (
             <div className="mb-8">
               <Button
                 variant="ghost"
                 className="mb-4 gap-2"
                 onClick={() => {
-                  setShowAll(true)
                   setSelectedComplaint(null)
+                  setNotFound(false)
                 }}
               >
                 <ArrowRight className="h-4 w-4 rotate-180" />
-                Back to all complaints
+                Search another complaint
               </Button>
               <ComplaintDetail complaint={selectedComplaint} />
             </div>
           )}
 
-          {/* All Complaints */}
-          {showAll && (
-            <>
-              <h2 className="mb-6 text-xl font-bold text-foreground">Your Recent Complaints</h2>
-              <div className="flex flex-col gap-4">
-                {complaints.length > 0 ? complaints.map((complaint) => (
-                  <Card
-                    key={complaint.id}
-                    className="cursor-pointer border-border transition-all hover:border-primary/30 hover:shadow-md"
-                    onClick={() => {
-                      setSelectedComplaint(complaint)
-                      setShowAll(false)
-                    }}
-                  >
-                    <CardContent className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-3">
-                          <span className="font-mono text-sm font-bold text-primary">#{complaint.id.toString().slice(0, 8)}</span>
-                          <Badge className={statusColors[complaint.status as keyof typeof statusColors]}>
-                            {complaint.status.replace("-", " ")}
-                          </Badge>
-                        </div>
-                        <h3 className="font-semibold text-card-foreground">{complaint.category}</h3>
-                        <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            {complaint.location}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
-                            {new Date(complaint.created_at).toLocaleDateString()}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <span className="text-sm font-medium text-foreground">{complaint.progress}%</span>
-                        <Progress value={complaint.progress} className="h-2 w-32" />
-                        <span className="text-xs text-muted-foreground">{complaint.category}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )) : (
-                  <p className="text-center text-muted-foreground py-12">Search for a complaint by ID to see its status</p>
-                )}
-              </div>
-            </>
-          )}
         </div>
       </main>
       <Footer />

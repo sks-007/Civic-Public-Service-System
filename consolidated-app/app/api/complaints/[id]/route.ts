@@ -75,10 +75,10 @@ const demoComplaints = [
 // GET /api/complaints/[id] - Get single complaint by ID
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     if (getSupabase()) {
       const { data, error } = await getSupabase()
@@ -113,10 +113,10 @@ export async function GET(
 // PUT /api/complaints/[id] - Update complaint
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     if (getSupabase()) {
@@ -150,10 +150,10 @@ export async function PUT(
 // DELETE /api/complaints/[id] - Delete complaint
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     if (getSupabase()) {
       const { error } = await getSupabase()

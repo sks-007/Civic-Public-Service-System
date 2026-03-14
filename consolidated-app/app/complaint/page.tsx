@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useRef, useCallback, useEffect } from "react"
-import { supabase } from "@/lib/supabase"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -44,13 +43,11 @@ export default function ComplaintPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const { data, error } = await supabase
-          .from("service_categories")
-          .select("id, name")
-          .order("name")
-
-        if (error) throw error
-        if (data) setCategories(data)
+        const res = await fetch("/api/categories")
+        const json = await res.json()
+        if (json.success && Array.isArray(json.data)) {
+          setCategories(json.data)
+        }
       } catch (error) {
         console.error("Error fetching categories:", error)
       } finally {
@@ -61,7 +58,7 @@ export default function ComplaintPage() {
     fetchCategories()
   }, [])
 
-  const verifyImage = useCallback((fileIndex: number) => {
+  const verifyImage = useCallback((fileIndex: number, file: File) => {
     setVerifyingIndices((prev) => {
       const next = new Set(prev)
       next.add(fileIndex)
@@ -73,37 +70,56 @@ export default function ComplaintPage() {
       return next
     })
 
-    setTimeout(() => {
-      const isGenuine = Math.random() > 0.3
-      setVerificationResults((prev) => {
-        const next = new Map(prev)
-        next.set(fileIndex, {
-          status: isGenuine ? "genuine" : "suspicious",
-          confidence: isGenuine ? 94.7 : 32.1,
-          details: isGenuine
-            ? [
-              "No signs of digital manipulation detected",
-              "EXIF metadata is consistent",
-              "Pixel-level analysis passed",
-              "No GAN artifacts found",
-              "Lighting and shadows are consistent",
-            ]
-            : [
-              "Potential signs of image manipulation",
-              "Inconsistent noise patterns detected",
-              "Possible GAN-generated artifacts",
-              "Metadata inconsistencies found",
-              "Recommend manual review by officer",
-            ],
+    const formData = new FormData()
+    formData.append("image", file)
+
+    fetch("/api/verify-image", { method: "POST", body: formData })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.verification) {
+          setVerificationResults((prev) => {
+            const next = new Map(prev)
+            next.set(fileIndex, {
+              status: data.verification.status,
+              confidence: data.verification.confidence,
+              details: data.verification.details,
+            })
+            return next
+          })
+        } else {
+          // API returned an error — flag for manual review
+          setVerificationResults((prev) => {
+            const next = new Map(prev)
+            next.set(fileIndex, {
+              status: "suspicious",
+              confidence: 0,
+              details: [
+                "Verification returned an unexpected response",
+                "Image flagged for manual review by an officer",
+              ],
+            })
+            return next
+          })
+        }
+      })
+      .catch(() => {
+        setVerificationResults((prev) => {
+          const next = new Map(prev)
+          next.set(fileIndex, {
+            status: "suspicious",
+            confidence: 0,
+            details: ["Verification service unavailable — image flagged for manual review"],
+          })
+          return next
         })
-        return next
       })
-      setVerifyingIndices((prev) => {
-        const next = new Set(prev)
-        next.delete(fileIndex)
-        return next
+      .finally(() => {
+        setVerifyingIndices((prev) => {
+          const next = new Set(prev)
+          next.delete(fileIndex)
+          return next
+        })
       })
-    }, 3000)
   }, [])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,12 +127,12 @@ export default function ComplaintPage() {
       const newFiles = Array.from(e.target.files)
       setFiles((prev) => {
         const updated = [...prev, ...newFiles].slice(0, 5)
-        // Auto-verify new files
+        // Auto-verify new files via the API
         const startIndex = prev.length
-        newFiles.forEach((_, i) => {
+        newFiles.forEach((file, i) => {
           const idx = startIndex + i
           if (idx < 5) {
-            verifyImage(idx)
+            verifyImage(idx, file)
           }
         })
         return updated
@@ -156,34 +172,29 @@ export default function ComplaintPage() {
     const formData = new FormData(e.currentTarget as HTMLFormElement)
     const complaintData = {
       fullname: formData.get("fullName"),
-      full_name: formData.get("fullName"), // Compatibility
       email: formData.get("email"),
       phone: formData.get("phone"),
-      district: formData.get("ward"),
-      ward: formData.get("ward"), // Compatibility
+      ward: formData.get("ward"),
       category: formData.get("category"),
-      location_address: formData.get("address"),
-      location: formData.get("address"), // Compatibility
+      location: formData.get("address"),
       description: formData.get("description"),
-      status: "Pending",
-      priority: "Medium",
-      progress: "0",
     }
 
     try {
-      const { data, error } = await supabase
-        .from("complaints")
-        .insert([complaintData])
-        .select()
+      const response = await fetch("/api/complaints", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(complaintData),
+      })
+      const data = await response.json()
 
-      if (error) throw error
+      if (!data.success) throw new Error(data.error || "Failed to submit complaint")
 
       setIsSubmitting(false)
       setSubmitted(true)
     } catch (error: any) {
       console.error("Error submitting complaint:", error)
       setIsSubmitting(false)
-      // You might want to show a toast error here
     }
   }
 
