@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Complaints - CPSS</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen">
+  <div id="navbar"></div>
+
+  <main class="flex-1">
+    <!-- Header -->
+    <section style="background: linear-gradient(to right, var(--primary), var(--primary-dark)); padding: 3rem 1rem; color: white;">
+      <div class="container" style="max-width: 80rem;">
+        <h1 class="text-3xl font-bold mb-2">Community Complaints</h1>
+        <p style="color: rgba(255, 255, 255, 0.8);">Browse and support civic issues reported by your community</p>
+      </div>
+    </section>
+
+    <section class="container" style="padding: 2rem 1rem;">
+      <!-- Filters -->
+      <div style="margin-bottom: 2rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between;">
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn btn-sm filter-btn active" data-category="all">All</button>
+          <button class="btn btn-sm btn-outline filter-btn" data-category="Waste Management">Waste</button>
+          <button class="btn btn-sm btn-outline filter-btn" data-category="Transportation">Transportation</button>
+          <button class="btn btn-sm btn-outline filter-btn" data-category="Water & Sewage">Water</button>
+          <button class="btn btn-sm btn-outline filter-btn" data-category="Parks & Recreation">Parks</button>
+          <button class="btn btn-sm btn-outline filter-btn" data-category="Street Lighting">Lighting</button>
+        </div>
+
+        <select id="sortBy" class="form-select" style="width: auto;">
+          <option value="date">Sort by Date</option>
+          <option value="priority">Sort by Priority</option>
+          <option value="status">Sort by Status</option>
+        </select>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loadingState" style="text-align: center; padding: 3rem;">
+        <div class="spinner-icon spinner" style="margin: 0 auto;"></div>
+        <p class="text-muted-foreground mt-4">Loading complaints...</p>
+      </div>
+
+      <!-- Complaints Grid -->
+      <div id="complaintsGrid" class="services-grid" style="display: none;"></div>
+
+      <!-- Empty State -->
+      <div id="emptyState" style="display: none; text-align: center; padding: 3rem;">
+        <i data-lucide="inbox" style="width: 4rem; height: 4rem; color: var(--muted-foreground); margin: 0 auto 1rem;"></i>
+        <h3 class="text-xl font-semibold mb-2">No complaints found</h3>
+        <p class="text-muted-foreground">Try adjusting your filters or check back later</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="/js/utils.js"></script>
+  <script>
+    let allComplaints = [];
+    let currentFilter = 'all';
+
+    // Load complaints from API
+    async function loadComplaints() {
+      try {
+        const response = await fetch('/api/complaints');
+        const data = await response.json();
+
+        document.getElementById('loadingState').style.display = 'none';
+
+        if (data.success && data.data && data.data.length > 0) {
+          allComplaints = data.data;
+          displayComplaints(allComplaints);
+        } else {
+          document.getElementById('emptyState').style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error loading complaints:', error);
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'block';
+      }
+    }
+
+    // Display complaints
+    function displayComplaints(complaints) {
+      const grid = document.getElementById('complaintsGrid');
+
+      if (complaints.length === 0) {
+        grid.style.display = 'none';
+        document.getElementById('emptyState').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('emptyState').style.display = 'none';
+      grid.style.display = 'grid';
+      grid.innerHTML = complaints.map(complaint => {
+        const statusColors = {
+          'Pending': 'badge-warning',
+          'In Progress': 'badge-primary',
+          'Resolved': 'badge-success',
+          'Rejected': 'badge-destructive'
+        };
+
+        const priorityColors = {
+          'High': 'badge-destructive',
+          'Medium': 'badge-warning',
+          'Low': 'badge-muted'
+        };
+
+        return `
+          <div class="card service-card">
+            <div class="card-content">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <span class="badge ${statusColors[complaint.status] || 'badge-muted'}">${complaint.status || 'Pending'}</span>
+                <span class="badge ${priorityColors[complaint.priority] || 'badge-muted'}">${complaint.priority || 'Medium'}</span>
+              </div>
+
+              <h3 class="text-lg font-semibold mb-2">${complaint.category || 'General Issue'}</h3>
+              <p class="text-sm text-muted-foreground mb-3" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                ${complaint.description || 'No description provided'}
+              </p>
+
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                <i data-lucide="map-pin" class="icon-sm" style="color: var(--muted-foreground);"></i>
+                <span class="text-xs text-muted-foreground">${complaint.location || complaint.location_address || 'Location not specified'}</span>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                <i data-lucide="user" class="icon-sm" style="color: var(--muted-foreground);"></i>
+                <span class="text-xs text-muted-foreground">${complaint.fullname || complaint.full_name || 'Anonymous'} • ${complaint.ward || complaint.district || 'N/A'}</span>
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <button class="btn btn-sm btn-outline upvote-btn" onclick="handleUpvote('${complaint.id}')" style="flex: 1;">
+                  <i data-lucide="thumbs-up" class="icon-sm"></i>
+                  Support (<span id="upvotes-${complaint.id}">0</span>)
+                </button>
+                <a href="/track?id=${complaint.id}" class="btn btn-sm btn-primary">
+                  <i data-lucide="eye" class="icon-sm"></i>
+                  View
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // Handle upvote
+    function handleUpvote(id) {
+      const upvotesElement = document.getElementById('upvotes-' + id);
+      const currentUpvotes = parseInt(upvotesElement.textContent);
+      upvotesElement.textContent = currentUpvotes + 1;
+      showToast('Upvote recorded!', 'success');
+    }
+
+    // Filter complaints
+    function filterComplaints(category) {
+      currentFilter = category;
+      let filtered = allComplaints;
+
+      if (category !== 'all') {
+        filtered = allComplaints.filter(c => c.category === category);
+      }
+
+      displayComplaints(filtered);
+    }
+
+    // Sort complaints
+    function sortComplaints(sortBy) {
+      let sorted = [...allComplaints];
+
+      switch(sortBy) {
+        case 'date':
+          sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+          break;
+        case 'priority':
+          const priorityOrder = { 'High': 1, 'Medium': 2, 'Low': 3 };
+          sorted.sort((a, b) => (priorityOrder[a.priority] || 2) - (priorityOrder[b.priority] || 2));
+          break;
+        case 'status':
+          sorted.sort((a, b) => (a.status || '').localeCompare(b.status || ''));
+          break;
+      }
+
+      allComplaints = sorted;
+      filterComplaints(currentFilter);
+    }
+
+    // Event listeners
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('active');
+          b.classList.add('btn-outline');
+        });
+        e.target.classList.add('active');
+        e.target.classList.remove('btn-outline');
+
+        filterComplaints(e.target.dataset.category);
+      });
+    });
+
+    document.getElementById('sortBy').addEventListener('change', (e) => {
+      sortComplaints(e.target.value);
+    });
+
+    // Initialize
+    loadComplaints();
+  </script>
+</body>
+</html>

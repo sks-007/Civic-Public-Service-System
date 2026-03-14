@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Assistant - CPSS</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen">
+  <div id="navbar"></div>
+
+  <main class="flex-1" style="background: var(--background);">
+    <div class="container" style="max-width: 56rem; padding: 2rem 1rem;">
+      <div class="card" style="height: calc(100vh - 12rem); display: flex; flex-direction: column;">
+        <!-- Chat Header -->
+        <div class="card-header" style="background: linear-gradient(to right, var(--primary), var(--primary-dark)); border-radius: var(--radius) var(--radius) 0 0;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 3rem; height: 3rem; border-radius: 50%; background: rgba(255, 255, 255, 0.2); display: flex; align-items: center; justify-content: center;">
+              <i data-lucide="bot" style="width: 1.5rem; height: 1.5rem; color: white;"></i>
+            </div>
+            <div>
+              <h2 class="font-bold" style="color: white;">CPSS AI Assistant</h2>
+              <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.8);">
+                <span style="display: inline-flex; align-items: center; gap: 0.25rem;">
+                  <span style="width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #22c55e;"></span>
+                  Online
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Messages Container -->
+        <div class="card-content" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem;" id="messagesContainer">
+          <!-- Welcome Message -->
+          <div class="message assistant">
+            <div class="message-avatar" style="background-color: rgba(26, 86, 219, 0.1); color: var(--primary);">
+              <i data-lucide="bot" class="icon-sm"></i>
+            </div>
+            <div class="message-content" style="background: linear-gradient(to bottom right, var(--secondary), var(--secondary)); color: var(--foreground);">
+              Hello! I'm your CPSS AI Assistant. I'm here to help you with:
+              - Submitting complaints
+              - Tracking complaint status
+              - Finding service centers
+              - Answering questions about civic services
+
+              How can I assist you today?
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div style="padding: 0 1.5rem 1rem;">
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;" id="quickActions">
+            <button class="btn btn-sm btn-outline quick-action" data-message="How do I submit a complaint?">
+              <i data-lucide="help-circle" class="icon-sm"></i>
+              How to submit?
+            </button>
+            <button class="btn btn-sm btn-outline quick-action" data-message="Track my complaint status">
+              <i data-lucide="search" class="icon-sm"></i>
+              Track status
+            </button>
+            <button class="btn btn-sm btn-outline quick-action" data-message="Show me service centers">
+              <i data-lucide="map-pin" class="icon-sm"></i>
+              Service centers
+            </button>
+            <button class="btn btn-sm btn-outline quick-action" data-message="Report a streetlight issue">
+              <i data-lucide="lightbulb" class="icon-sm"></i>
+              Report streetlight
+            </button>
+          </div>
+        </div>
+
+        <!-- Typing Indicator -->
+        <div id="typingIndicator" style="display: none; padding: 0 1.5rem 1rem;">
+          <div class="message assistant">
+            <div class="message-avatar" style="background-color: rgba(26, 86, 219, 0.1); color: var(--primary);">
+              <i data-lucide="bot" class="icon-sm"></i>
+            </div>
+            <div class="message-content" style="background: linear-gradient(to bottom right, var(--secondary), var(--secondary)); color: var(--foreground);">
+              <span class="animate-bounce" style="display: inline-block;">.</span>
+              <span class="animate-bounce" style="display: inline-block; animation-delay: 0.2s;">.</span>
+              <span class="animate-bounce" style="display: inline-block; animation-delay: 0.4s;">.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input Area -->
+        <div style="border-top: 1px solid var(--border); padding: 1.5rem;">
+          <form id="chatForm" style="display: flex; gap: 0.5rem;">
+            <input
+              type="text"
+              id="messageInput"
+              class="form-input"
+              placeholder="Type your message..."
+              style="flex: 1;"
+            >
+            <button type="submit" class="btn btn-primary">
+              <i data-lucide="send" class="icon"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="/js/utils.js"></script>
+  <script>
+    const messagesContainer = document.getElementById('messagesContainer');
+    const chatForm = document.getElementById('chatForm');
+    const messageInput = document.getElementById('messageInput');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const quickActions = document.querySelectorAll('.quick-action');
+
+    // AI responses database
+    const responses = {
+      'submit': {
+        keywords: ['submit', 'report', 'complaint', 'issue', 'problem'],
+        response: 'To submit a complaint:\n1. Visit the Submit Complaint page\n2. Fill in your details\n3. Select the category and ward\n4. Describe the issue\n5. Optionally upload an image (AI verified)\n6. Submit and receive a tracking ID\n\nWould you like me to take you to the submission page?'
+      },
+      'track': {
+        keywords: ['track', 'status', 'check', 'progress', 'follow'],
+        response: 'To track your complaint:\n1. Go to the Track page\n2. Enter your complaint ID\n3. View real-time status, progress, assigned officer, and timeline\n\nDo you have a complaint ID you\'d like to track?'
+      },
+      'services': {
+        keywords: ['service', 'center', 'department', 'office', 'location'],
+        response: 'We offer 5 main service categories:\n• Waste Management - 200 Civic Center Dr\n• Transportation - 150 Transit Blvd\n• Water & Sewage - 300 Reservoir Rd\n• Parks & Recreation - 75 Greenway Ave\n• Street Lighting - 100 Power Lane\n\nWhich service would you like to know more about?'
+      },
+      'streetlight': {
+        keywords: ['streetlight', 'light', 'lighting', 'lamp', 'dark'],
+        response: 'To report a streetlight issue:\n1. Note the location and pole number (if visible)\n2. Submit a complaint under "Street Lighting" category\n3. Average response time: 24-48 hours\n\nContact: lighting@cpss.gov | +1 (555) 100-1005\n\nShall I help you submit a streetlight complaint?'
+      },
+      'contact': {
+        keywords: ['contact', 'phone', 'email', 'call', 'reach'],
+        response: 'Contact CPSS:\n📞 Phone: +1 (555) 100-CPSS\n📧 Email: info@cpss.gov\n📍 Address: City Hall, 123 Main St, Cityville\n⏰ Hours: Mon-Fri 8AM-6PM, Sat 9AM-2PM\n\nFor emergencies: 1-800-CPSS-911'
+      },
+      'default': {
+        keywords: [],
+        response: 'I\'m here to help! You can ask me about:\n• How to submit complaints\n• Tracking complaint status\n• Service center locations\n• Department contact information\n• Civic service procedures\n\nWhat would you like to know?'
+      }
+    };
+
+    // Handle form submission
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const message = messageInput.value.trim();
+      if (!message) return;
+
+      addUserMessage(message);
+      messageInput.value = '';
+
+      // Show typing indicator
+      typingIndicator.style.display = 'block';
+      scrollToBottom();
+
+      // Simulate AI thinking time
+      setTimeout(() => {
+        typingIndicator.style.display = 'none';
+        const response = getAIResponse(message);
+        addAssistantMessage(response);
+      }, 1500);
+    });
+
+    // Handle quick actions
+    quickActions.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const message = btn.dataset.message;
+        addUserMessage(message);
+
+        typingIndicator.style.display = 'block';
+        scrollToBottom();
+
+        setTimeout(() => {
+          typingIndicator.style.display = 'none';
+          const response = getAIResponse(message);
+          addAssistantMessage(response);
+        }, 1500);
+      });
+    });
+
+    // Add user message
+    function addUserMessage(text) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message user';
+      messageDiv.innerHTML = `
+        <div class="message-avatar" style="background-color: var(--secondary); color: var(--foreground);">
+          <i data-lucide="user" class="icon-sm"></i>
+        </div>
+        <div class="message-content" style="background: linear-gradient(to bottom right, var(--primary), var(--primary-dark)); color: white;">
+          ${text}
+        </div>
+      `;
+      messagesContainer.appendChild(messageDiv);
+      lucide.createIcons();
+      scrollToBottom();
+    }
+
+    // Add assistant message
+    function addAssistantMessage(text) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message assistant';
+      messageDiv.innerHTML = `
+        <div class="message-avatar" style="background-color: rgba(26, 86, 219, 0.1); color: var(--primary);">
+          <i data-lucide="bot" class="icon-sm"></i>
+        </div>
+        <div class="message-content" style="background: linear-gradient(to bottom right, var(--secondary), var(--secondary)); color: var(--foreground);">
+          ${text}
+        </div>
+      `;
+      messagesContainer.appendChild(messageDiv);
+      lucide.createIcons();
+      scrollToBottom();
+    }
+
+    // Get AI response
+    function getAIResponse(message) {
+      const lowerMessage = message.toLowerCase();
+
+      for (const [key, data] of Object.entries(responses)) {
+        if (data.keywords.some(keyword => lowerMessage.includes(keyword))) {
+          return data.response;
+        }
+      }
+
+      return responses.default.response;
+    }
+
+    // Scroll to bottom
+    function scrollToBottom() {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Initial scroll
+    scrollToBottom();
+  </script>
+</body>
+</html>

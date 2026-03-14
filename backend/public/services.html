@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services - CPSS</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen">
+  <div id="navbar"></div>
+
+  <main class="flex-1">
+    <!-- Hero Section -->
+    <section style="background: linear-gradient(to bottom right, var(--secondary), var(--background)); padding: 3rem 1rem; border-bottom: 1px solid var(--border);">
+      <div class="container">
+        <div style="text-align: center; max-width: 42rem; margin: 0 auto;">
+          <h1 class="text-3xl font-bold mb-2">Our Services</h1>
+          <p class="text-muted-foreground">Comprehensive civic services across all city wards. We're here to address your community concerns and improve quality of life for all residents.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section class="container" style="padding: 4rem 1rem;">
+      <!-- Waste Management -->
+      <div class="card" style="margin-bottom: 2rem;">
+        <div class="card-content">
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div style="display: flex; align-items: start; gap: 1rem;">
+              <div style="width: 4rem; height: 4rem; border-radius: var(--radius); background: linear-gradient(to bottom right, var(--chart-1), #fb923c); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i data-lucide="trash-2" style="width: 2rem; height: 2rem; color: white;"></i>
+              </div>
+              <div style="flex: 1;">
+                <h2 class="text-2xl font-bold mb-2">Waste Management</h2>
+                <p class="text-muted-foreground">Professional waste collection, recycling programs, and disposal services for residential and commercial areas.</p>
+              </div>
+            </div>
+
+            <div class="separator"></div>
+
+            <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 1rem;">
+              <div class="sm:grid-cols-2" style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 1rem;">
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Regular Collection</h3>
+                  <p class="text-xs text-muted-foreground">Scheduled pickups for household and commercial waste</p>
+                </div>
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Recycling Services</h3>
+                  <p class="text-xs text-muted-foreground">Separate collection for recyclable materials</p>
+                </div>
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Bulk Item Pickup</h3>
+                  <p class="text-xs text-muted-foreground">Special collection for large items and furniture</p>
+                </div>
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Illegal Dumping</h3>
+                  <p class="text-xs text-muted-foreground">Report and cleanup of unauthorized waste disposal</p>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; padding-top: 0.5rem;">
+              <div style="flex: 1; min-width: 200px;">
+                <p class="text-xs text-muted-foreground mb-1">Contact</p>
+                <p class="text-sm font-semibold">waste@cpss.gov</p>
+                <p class="text-sm font-semibold">+1 (555) 100-1001</p>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <p class="text-xs text-muted-foreground mb-1">Response Time</p>
+                <p class="text-sm font-semibold">24-48 hours</p>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <p class="text-xs text-muted-foreground mb-1">Operating Hours</p>
+                <p class="text-sm font-semibold">Mon-Sat, 6 AM - 6 PM</p>
+              </div>
+            </div>
+
+            <a href="/complaint" class="btn btn-primary">
+              <i data-lucide="file-plus" class="icon"></i>
+              Report Waste Issue
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transportation -->
+      <div class="card" style="margin-bottom: 2rem;">
+        <div class="card-content">
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div style="display: flex; align-items: start; gap: 1rem;">
+              <div style="width: 4rem; height: 4rem; border-radius: var(--radius); background: linear-gradient(to bottom right, var(--chart-2), #60a5fa); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i data-lucide="bus" style="width: 2rem; height: 2rem; color: white;"></i>
+              </div>
+              <div style="flex: 1;">
+                <h2 class="text-2xl font-bold mb-2">Transportation</h2>
+                <p class="text-muted-foreground">Comprehensive road maintenance, traffic management, and public transit services for safe and efficient travel.</p>
+              </div>
+            </div>
+
+            <div class="separator"></div>
+
+            <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 1rem;">
+              <div class="sm:grid-cols-2" style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 1rem;">
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Road Repairs</h3>
+                  <p class="text-xs text-muted-foreground">Potholes, cracks, and surface damage repairs</p>
+                </div>
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Traffic Signals</h3>
+                  <p class="text-xs text-muted-foreground">Signal malfunction and timing issues</p>
+                </div>
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Public Transit</h3>
+                  <p class="text-xs text-muted-foreground">Bus services, stops, and schedule concerns</p>
+                </div>
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Parking Issues</h3>
+                  <p class="text-xs text-muted-foreground">Parking violations and meter problems</p>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; padding-top: 0.5rem;">
+              <div style="flex: 1; min-width: 200px;">
+                <p class="text-xs text-muted-foreground mb-1">Contact</p>
+                <p class="text-sm font-semibold">transport@cpss.gov</p>
+                <p class="text-sm font-semibold">+1 (555) 100-1002</p>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <p class="text-xs text-muted-foreground mb-1">Response Time</p>
+                <p class="text-sm font-semibold">12-24 hours</p>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <p class="text-xs text-muted-foreground mb-1">Operating Hours</p>
+                <p class="text-sm font-semibold">24/7 Emergency Line</p>
+              </div>
+            </div>
+
+            <a href="/complaint" class="btn btn-primary">
+              <i data-lucide="file-plus" class="icon"></i>
+              Report Transportation Issue
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Water & Sewage -->
+      <div class="card" style="margin-bottom: 2rem;">
+        <div class="card-content">
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div style="display: flex; align-items: start; gap: 1rem;">
+              <div style="width: 4rem; height: 4rem; border-radius: var(--radius); background: linear-gradient(to bottom right, var(--chart-3), #4ade80); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i data-lucide="droplet" style="width: 2rem; height: 2rem; color: white;"></i>
+              </div>
+              <div style="flex: 1;">
+                <h2 class="text-2xl font-bold mb-2">Water & Sewage</h2>
+                <p class="text-muted-foreground">Clean water supply, sewage system maintenance, and drainage services to ensure public health and sanitation.</p>
+              </div>
+            </div>
+
+            <div class="separator"></div>
+
+            <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 1rem;">
+              <div class="sm:grid-cols-2" style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 1rem;">
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Water Leaks</h3>
+                  <p class="text-xs text-muted-foreground">Main breaks and pipe leakage issues</p>
+                </div>
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Drainage Problems</h3>
+                  <p class="text-xs text-muted-foreground">Blocked drains and flooding concerns</p>
+                </div>
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Sewage Issues</h3>
+                  <p class="text-xs text-muted-foreground">Sewage backups and system failures</p>
+                </div>
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Water Quality</h3>
+                  <p class="text-xs text-muted-foreground">Concerns about water safety and quality</p>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; padding-top: 0.5rem;">
+              <div style="flex: 1; min-width: 200px;">
+                <p class="text-xs text-muted-foreground mb-1">Contact</p>
+                <p class="text-sm font-semibold">water@cpss.gov</p>
+                <p class="text-sm font-semibold">+1 (555) 100-1003</p>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <p class="text-xs text-muted-foreground mb-1">Response Time</p>
+                <p class="text-sm font-semibold">6-12 hours</p>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <p class="text-xs text-muted-foreground mb-1">Operating Hours</p>
+                <p class="text-sm font-semibold">24/7 Emergency Line</p>
+              </div>
+            </div>
+
+            <a href="/complaint" class="btn btn-primary">
+              <i data-lucide="file-plus" class="icon"></i>
+              Report Water/Sewage Issue
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Parks & Recreation -->
+      <div class="card" style="margin-bottom: 2rem;">
+        <div class="card-content">
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div style="display: flex; align-items: start; gap: 1rem;">
+              <div style="width: 4rem; height: 4rem; border-radius: var(--radius); background: linear-gradient(to bottom right, #22c55e, #16a34a); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i data-lucide="trees" style="width: 2rem; height: 2rem; color: white;"></i>
+              </div>
+              <div style="flex: 1;">
+                <h2 class="text-2xl font-bold mb-2">Parks & Recreation</h2>
+                <p class="text-muted-foreground">Maintenance of parks, playgrounds, sports facilities, and green spaces for community recreation and enjoyment.</p>
+              </div>
+            </div>
+
+            <div class="separator"></div>
+
+            <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 1rem;">
+              <div class="sm:grid-cols-2" style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 1rem;">
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Park Maintenance</h3>
+                  <p class="text-xs text-muted-foreground">Landscaping, cleaning, and upkeep</p>
+                </div>
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Playground Equipment</h3>
+                  <p class="text-xs text-muted-foreground">Broken or unsafe play structures</p>
+                </div>
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Sports Facilities</h3>
+                  <p class="text-xs text-muted-foreground">Courts, fields, and recreational areas</p>
+                </div>
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Tree Services</h3>
+                  <p class="text-xs text-muted-foreground">Tree trimming, removal, and planting</p>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; padding-top: 0.5rem;">
+              <div style="flex: 1; min-width: 200px;">
+                <p class="text-xs text-muted-foreground mb-1">Contact</p>
+                <p class="text-sm font-semibold">parks@cpss.gov</p>
+                <p class="text-sm font-semibold">+1 (555) 100-1004</p>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <p class="text-xs text-muted-foreground mb-1">Response Time</p>
+                <p class="text-sm font-semibold">48-72 hours</p>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <p class="text-xs text-muted-foreground mb-1">Operating Hours</p>
+                <p class="text-sm font-semibold">Mon-Fri, 7 AM - 5 PM</p>
+              </div>
+            </div>
+
+            <a href="/complaint" class="btn btn-primary">
+              <i data-lucide="file-plus" class="icon"></i>
+              Report Parks Issue
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Street Lighting -->
+      <div class="card">
+        <div class="card-content">
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div style="display: flex; align-items: start; gap: 1rem;">
+              <div style="width: 4rem; height: 4rem; border-radius: var(--radius); background: linear-gradient(to bottom right, var(--chart-5), #a78bfa); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i data-lucide="lightbulb" style="width: 2rem; height: 2rem; color: white;"></i>
+              </div>
+              <div style="flex: 1;">
+                <h2 class="text-2xl font-bold mb-2">Street Lighting</h2>
+                <p class="text-muted-foreground">Installation, maintenance, and repair of street lights to ensure safe and well-lit public spaces throughout the city.</p>
+              </div>
+            </div>
+
+            <div class="separator"></div>
+
+            <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 1rem;">
+              <div class="sm:grid-cols-2" style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 1rem;">
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Light Outages</h3>
+                  <p class="text-xs text-muted-foreground">Non-functional street lights and dark areas</p>
+                </div>
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Damaged Fixtures</h3>
+                  <p class="text-xs text-muted-foreground">Broken poles, wiring, and equipment</p>
+                </div>
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">New Installations</h3>
+                  <p class="text-xs text-muted-foreground">Request lighting for dark areas</p>
+                </div>
+                <div style="padding: 1rem; background-color: var(--secondary); border-radius: var(--radius);">
+                  <h3 class="text-sm font-semibold mb-1">Energy Efficiency</h3>
+                  <p class="text-xs text-muted-foreground">LED upgrades and smart lighting</p>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; padding-top: 0.5rem;">
+              <div style="flex: 1; min-width: 200px;">
+                <p class="text-xs text-muted-foreground mb-1">Contact</p>
+                <p class="text-sm font-semibold">lighting@cpss.gov</p>
+                <p class="text-sm font-semibold">+1 (555) 100-1005</p>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <p class="text-xs text-muted-foreground mb-1">Response Time</p>
+                <p class="text-sm font-semibold">24-48 hours</p>
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <p class="text-xs text-muted-foreground mb-1">Operating Hours</p>
+                <p class="text-sm font-semibold">Mon-Fri, 8 AM - 6 PM</p>
+              </div>
+            </div>
+
+            <a href="/complaint" class="btn btn-primary">
+              <i data-lucide="file-plus" class="icon"></i>
+              Report Lighting Issue
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section style="background: linear-gradient(to right, var(--secondary), var(--muted)); padding: 4rem 1rem; border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="card" style="padding: 3rem 2rem; text-align: center;">
+          <h2 class="text-3xl font-bold mb-4">Need Help?</h2>
+          <p class="text-muted-foreground mb-6" style="max-width: 42rem; margin-left: auto; margin-right: auto;">
+            Can't find the service you're looking for? Contact our support team or use our AI chatbot for instant assistance.
+          </p>
+          <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="/contact" class="btn btn-lg btn-primary">
+              <i data-lucide="phone" class="icon"></i>
+              Contact Support
+            </a>
+            <a href="/ai-chatbot" class="btn btn-lg btn-outline">
+              <i data-lucide="bot" class="icon"></i>
+              AI Assistant
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="/js/utils.js"></script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPSS - Civic Public Service System</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen">
+  <div id="navbar"></div>
+
+  <main class="flex-1">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-glow-1"></div>
+      <div class="hero-glow-2"></div>
+      <div class="hero-content">
+        <h1>Civic Public Service System</h1>
+        <p>Report, Track, Resolve - Your voice matters in building a better community. Submit complaints, track progress, and connect with authorities seamlessly.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
+          <a href="/complaint" class="btn btn-lg" style="background: white; color: var(--primary);">
+            <i data-lucide="file-plus" class="icon"></i>
+            Submit Complaint
+          </a>
+          <a href="/track" class="btn btn-lg btn-outline" style="border-color: white; color: white;">
+            <i data-lucide="search" class="icon"></i>
+            Track Status
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value">12,450+</div>
+          <div class="stat-label">Issues Resolved</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">98.2%</div>
+          <div class="stat-label">Satisfaction Rate</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">24hr</div>
+          <div class="stat-label">Avg Response Time</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">5</div>
+          <div class="stat-label">City Wards</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="container" style="padding: 4rem 1rem;">
+      <div style="text-align: center; margin-bottom: 3rem;">
+        <h2 class="text-3xl font-bold mb-2">Our Services</h2>
+        <p class="text-muted-foreground">Comprehensive civic services for all your community needs</p>
+      </div>
+
+      <div class="services-grid">
+        <div class="card service-card">
+          <div class="card-content">
+            <div style="width: 3rem; height: 3rem; border-radius: 0.5rem; background: linear-gradient(to bottom right, var(--chart-1), #fb923c); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+              <i data-lucide="trash-2" style="width: 1.5rem; height: 1.5rem; color: white;"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Waste Management</h3>
+            <p class="text-sm text-muted-foreground mb-4">Report missed collections, illegal dumping, and request special pickups for bulk items.</p>
+            <a href="/complaint" class="btn btn-sm btn-primary">
+              Report Issue
+              <i data-lucide="arrow-right" class="icon-sm"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="card service-card">
+          <div class="card-content">
+            <div style="width: 3rem; height: 3rem; border-radius: 0.5rem; background: linear-gradient(to bottom right, var(--chart-2), #60a5fa); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+              <i data-lucide="bus" style="width: 1.5rem; height: 1.5rem; color: white;"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Transportation</h3>
+            <p class="text-sm text-muted-foreground mb-4">Report road damage, traffic signal issues, and public transit concerns.</p>
+            <a href="/complaint" class="btn btn-sm btn-primary">
+              Report Issue
+              <i data-lucide="arrow-right" class="icon-sm"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="card service-card">
+          <div class="card-content">
+            <div style="width: 3rem; height: 3rem; border-radius: 0.5rem; background: linear-gradient(to bottom right, var(--chart-3), #4ade80); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+              <i data-lucide="droplet" style="width: 1.5rem; height: 1.5rem; color: white;"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Water & Sewage</h3>
+            <p class="text-sm text-muted-foreground mb-4">Report water leaks, drainage problems, and sewage system issues.</p>
+            <a href="/complaint" class="btn btn-sm btn-primary">
+              Report Issue
+              <i data-lucide="arrow-right" class="icon-sm"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="card service-card">
+          <div class="card-content">
+            <div style="width: 3rem; height: 3rem; border-radius: 0.5rem; background: linear-gradient(to bottom right, #22c55e, #16a34a); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+              <i data-lucide="trees" style="width: 1.5rem; height: 1.5rem; color: white;"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Parks & Recreation</h3>
+            <p class="text-sm text-muted-foreground mb-4">Report park maintenance needs, broken equipment, and facility concerns.</p>
+            <a href="/complaint" class="btn btn-sm btn-primary">
+              Report Issue
+              <i data-lucide="arrow-right" class="icon-sm"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="card service-card">
+          <div class="card-content">
+            <div style="width: 3rem; height: 3rem; border-radius: 0.5rem; background: linear-gradient(to bottom right, var(--chart-5), #a78bfa); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+              <i data-lucide="lightbulb" style="width: 1.5rem; height: 1.5rem; color: white;"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Street Lighting</h3>
+            <p class="text-sm text-muted-foreground mb-4">Report outages, damaged fixtures, and request new installations.</p>
+            <a href="/complaint" class="btn btn-sm btn-primary">
+              Report Issue
+              <i data-lucide="arrow-right" class="icon-sm"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="card service-card">
+          <div class="card-content">
+            <div style="width: 3rem; height: 3rem; border-radius: 0.5rem; background: linear-gradient(to bottom right, #f59e0b, #d97706); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+              <i data-lucide="building-2" style="width: 1.5rem; height: 1.5rem; color: white;"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">More Services</h3>
+            <p class="text-sm text-muted-foreground mb-4">Explore all civic services and get connected with the right department.</p>
+            <a href="/services" class="btn btn-sm btn-outline">
+              View All
+              <i data-lucide="arrow-right" class="icon-sm"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section style="background: linear-gradient(to right, var(--secondary), var(--muted)); padding: 4rem 1rem; border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="card" style="padding: 3rem 2rem; text-align: center;">
+          <h2 class="text-3xl font-bold mb-4">Need Immediate Assistance?</h2>
+          <p class="text-muted-foreground mb-6" style="max-width: 42rem; margin-left: auto; margin-right: auto;">
+            Our AI-powered chatbot is available 24/7 to help you submit complaints, track status,
+            find service centers, and answer your questions instantly.
+          </p>
+          <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="/ai-chatbot" class="btn btn-lg btn-primary">
+              <i data-lucide="bot" class="icon"></i>
+              Talk to AI Assistant
+            </a>
+            <a href="/contact" class="btn btn-lg btn-outline">
+              <i data-lucide="phone" class="icon"></i>
+              Contact Authorities
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="/js/utils.js"></script>
+</body>
+</html>

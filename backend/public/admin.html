@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - CPSS</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="min-h-screen">
+  <!-- Admin Header -->
+  <div class="admin-header">
+    <div class="container">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div style="width: 3rem; height: 3rem; border-radius: var(--radius); background-color: rgba(255, 255, 255, 0.2); display: flex; align-items: center; justify-content: center;">
+            <i data-lucide="shield" style="width: 1.5rem; height: 1.5rem; color: white;"></i>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold" style="color: white;">Admin Dashboard</h1>
+            <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.875rem;">Civic Public Service System</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span style="color: rgba(255, 255, 255, 0.9); font-size: 0.875rem;" id="adminEmail"></span>
+          <button class="btn btn-sm" style="background-color: rgba(255, 255, 255, 0.2); color: white; border: none;" id="logoutBtn">
+            <i data-lucide="log-out" class="icon-sm"></i>
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="flex-1" style="background-color: var(--secondary); padding: 2rem 1rem;">
+    <div class="container">
+      <!-- Stats Cards -->
+      <div class="stats-cards">
+        <div class="card">
+          <div class="card-content stat-card">
+            <div class="stat-card-info">
+              <p class="text-sm text-muted-foreground">Total Today</p>
+              <p class="stat-card-value" id="statTotal">47</p>
+              <p class="text-xs text-muted-foreground">+12% from yesterday</p>
+            </div>
+            <div style="width: 3rem; height: 3rem; border-radius: var(--radius); background: linear-gradient(to bottom right, var(--chart-1), #fb923c); display: flex; align-items: center; justify-content: center;">
+              <i data-lucide="file-text" style="width: 1.5rem; height: 1.5rem; color: white;"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-content stat-card">
+            <div class="stat-card-info">
+              <p class="text-sm text-muted-foreground">Resolved</p>
+              <p class="stat-card-value" id="statResolved">31</p>
+              <p class="text-xs text-muted-foreground">+8% from yesterday</p>
+            </div>
+            <div style="width: 3rem; height: 3rem; border-radius: var(--radius); background: linear-gradient(to bottom right, var(--success), #16a34a); display: flex; align-items: center; justify-content: center;">
+              <i data-lucide="check-circle" style="width: 1.5rem; height: 1.5rem; color: white;"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-content stat-card">
+            <div class="stat-card-info">
+              <p class="text-sm text-muted-foreground">Pending</p>
+              <p class="stat-card-value" id="statPending">16</p>
+              <p class="text-xs text-muted-foreground">-3% from yesterday</p>
+            </div>
+            <div style="width: 3rem; height: 3rem; border-radius: var(--radius); background: linear-gradient(to bottom right, var(--warning), #d97706); display: flex; align-items: center; justify-content: center;">
+              <i data-lucide="clock" style="width: 1.5rem; height: 1.5rem; color: white;"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-content stat-card">
+            <div class="stat-card-info">
+              <p class="text-sm text-muted-foreground">Officers</p>
+              <p class="stat-card-value" id="statOfficers">23</p>
+              <p class="text-xs text-muted-foreground">Active today</p>
+            </div>
+            <div style="width: 3rem; height: 3rem; border-radius: var(--radius); background: linear-gradient(to bottom right, var(--chart-5), #a78bfa); display: flex; align-items: center; justify-content: center;">
+              <i data-lucide="users" style="width: 1.5rem; height: 1.5rem; color: white;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Grid -->
+      <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 1.5rem; margin-top: 1.5rem;">
+        <div class="lg:grid-cols-3" style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 1.5rem;">
+          <!-- Complaints Table -->
+          <div style="grid-column: span 2;">
+            <div class="card">
+              <div class="card-header">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                  <div>
+                    <h3 class="card-title">Recent Complaints</h3>
+                    <p class="card-description">Latest submissions from citizens</p>
+                  </div>
+                  <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-sm btn-outline" onclick="openDialog('addOfficerDialog')">
+                      <i data-lucide="user-plus" class="icon-sm"></i>
+                      Add Officer
+                    </button>
+                    <button class="btn btn-sm btn-outline" onclick="openDialog('addCategoryDialog')">
+                      <i data-lucide="tag" class="icon-sm"></i>
+                      Add Category
+                    </button>
+                    <button class="btn btn-sm btn-outline" onclick="openDialog('addContactDialog')">
+                      <i data-lucide="phone" class="icon-sm"></i>
+                      Add Contact
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="card-content">
+                <div id="loadingState" style="text-align: center; padding: 2rem;">
+                  <div class="spinner-icon spinner" style="margin: 0 auto;"></div>
+                  <p class="text-muted-foreground mt-4">Loading complaints...</p>
+                </div>
+
+                <div id="complaintsTable" style="display: none;">
+                  <div class="table-container">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Category</th>
+                          <th>Ward</th>
+                          <th>Status</th>
+                          <th>Date</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody id="complaintsTableBody">
+                        <!-- Rows will be inserted here -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div id="errorState" style="display: none; text-align: center; padding: 2rem;">
+                  <i data-lucide="alert-circle" style="width: 3rem; height: 3rem; color: var(--destructive); margin-bottom: 1rem;"></i>
+                  <p class="text-muted-foreground">Failed to load complaints</p>
+                  <button class="btn btn-sm btn-primary mt-4" onclick="loadComplaints()">
+                    <i data-lucide="refresh-cw" class="icon-sm"></i>
+                    Retry
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sidebar -->
+          <div>
+            <!-- Category Breakdown Chart -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+              <div class="card-header">
+                <h3 class="card-title">Category Breakdown</h3>
+                <p class="card-description">Distribution by type</p>
+              </div>
+              <div class="card-content">
+                <canvas id="categoryChart" style="max-height: 200px;"></canvas>
+              </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Quick Stats</h3>
+              </div>
+              <div class="card-content">
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span class="text-sm text-muted-foreground">Avg Response Time</span>
+                    <span class="text-sm font-bold">18.5 hrs</span>
+                  </div>
+                  <div class="separator"></div>
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span class="text-sm text-muted-foreground">Resolution Rate</span>
+                    <span class="text-sm font-bold">87.3%</span>
+                  </div>
+                  <div class="separator"></div>
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span class="text-sm text-muted-foreground">Active Wards</span>
+                    <span class="text-sm font-bold">5/5</span>
+                  </div>
+                  <div class="separator"></div>
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span class="text-sm text-muted-foreground">This Month</span>
+                    <span class="text-sm font-bold">1,247</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add Officer Dialog -->
+  <div class="modal" id="addOfficerDialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="font-bold text-lg">Add New Officer</h3>
+      </div>
+      <div class="modal-body">
+        <form id="addOfficerForm">
+          <div class="form-group">
+            <label class="form-label" for="officerName">Full Name</label>
+            <input type="text" id="officerName" class="form-input" required placeholder="John Doe">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="officerEmail">Email</label>
+            <input type="email" id="officerEmail" class="form-input" required placeholder="john@cpss.gov">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="officerPhone">Phone</label>
+            <input type="tel" id="officerPhone" class="form-input" required placeholder="+1 234 567 8900">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="officerDepartment">Department</label>
+            <select id="officerDepartment" class="form-select" required>
+              <option value="">Select department</option>
+              <option value="Waste Management">Waste Management</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Water & Sewage">Water & Sewage</option>
+              <option value="Parks & Recreation">Parks & Recreation</option>
+              <option value="Street Lighting">Street Lighting</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeDialog('addOfficerDialog')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitOfficer()">Add Officer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Category Dialog -->
+  <div class="modal" id="addCategoryDialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="font-bold text-lg">Add New Category</h3>
+      </div>
+      <div class="modal-body">
+        <form id="addCategoryForm">
+          <div class="form-group">
+            <label class="form-label" for="categoryName">Category Name</label>
+            <input type="text" id="categoryName" class="form-input" required placeholder="e.g., Public Safety">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="categoryDescription">Description</label>
+            <textarea id="categoryDescription" class="form-textarea" rows="3" required placeholder="Brief description of this category"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeDialog('addCategoryDialog')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitCategory()">Add Category</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Contact Dialog -->
+  <div class="modal" id="addContactDialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="font-bold text-lg">Add Department Contact</h3>
+      </div>
+      <div class="modal-body">
+        <form id="addContactForm">
+          <div class="form-group">
+            <label class="form-label" for="contactDepartment">Department</label>
+            <input type="text" id="contactDepartment" class="form-input" required placeholder="e.g., Emergency Services">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contactName">Contact Person</label>
+            <input type="text" id="contactName" class="form-input" required placeholder="Jane Smith">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contactEmail">Email</label>
+            <input type="email" id="contactEmail" class="form-input" required placeholder="contact@cpss.gov">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contactPhone">Phone</label>
+            <input type="tel" id="contactPhone" class="form-input" required placeholder="+1 234 567 8900">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeDialog('addContactDialog')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitContact()">Add Contact</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script>
+    // Protected route - check authentication
+    const adminAuth = localStorage.getItem('cpss-admin-auth');
+    if (!adminAuth) {
+      window.location.href = '/admin/login';
+    }
+
+    // Display admin email
+    const adminEmail = localStorage.getItem('cpss-admin-email') || 'admin@cpss.gov';
+    document.getElementById('adminEmail').textContent = adminEmail;
+
+    // Logout handler
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('cpss-admin-auth');
+      localStorage.removeItem('cpss-admin-email');
+      window.location.href = '/admin/login';
+    });
+
+    // Load complaints from API
+    async function loadComplaints() {
+      document.getElementById('loadingState').style.display = 'block';
+      document.getElementById('complaintsTable').style.display = 'none';
+      document.getElementById('errorState').style.display = 'none';
+
+      try {
+        const response = await fetch('/api/complaints');
+        const data = await response.json();
+
+        if (data.success && data.data) {
+          displayComplaints(data.data);
+          document.getElementById('complaintsTable').style.display = 'block';
+        } else {
+          throw new Error('Failed to load complaints');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('errorState').style.display = 'block';
+      } finally {
+        document.getElementById('loadingState').style.display = 'none';
+      }
+    }
+
+    // Display complaints in table
+    function displayComplaints(complaints) {
+      const tbody = document.getElementById('complaintsTableBody');
+      tbody.innerHTML = '';
+
+      const statusColors = {
+        'Pending': 'badge-warning',
+        'In Progress': 'badge-primary',
+        'Resolved': 'badge-success',
+        'Rejected': 'badge-destructive'
+      };
+
+      complaints.slice(0, 10).forEach(complaint => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="font-mono">#${complaint.id}</td>
+          <td>${complaint.category || 'General'}</td>
+          <td>${complaint.ward || 'N/A'}</td>
+          <td><span class="badge ${statusColors[complaint.status] || 'badge-muted'}">${complaint.status || 'Pending'}</span></td>
+          <td>${formatDate(complaint.created_at)}</td>
+          <td>
+            <button class="btn btn-sm btn-outline" onclick="viewComplaint('${complaint.id}')">
+              <i data-lucide="eye" class="icon-sm"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      lucide.createIcons();
+    }
+
+    // View complaint details
+    function viewComplaint(id) {
+      window.location.href = `/track?id=${id}`;
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    // Dialog functions
+    function openDialog(dialogId) {
+      document.getElementById(dialogId).classList.add('open');
+    }
+
+    function closeDialog(dialogId) {
+      document.getElementById(dialogId).classList.remove('open');
+    }
+
+    // Submit officer
+    async function submitOfficer() {
+      const formData = {
+        name: document.getElementById('officerName').value,
+        email: document.getElementById('officerEmail').value,
+        phone: document.getElementById('officerPhone').value,
+        department: document.getElementById('officerDepartment').value
+      };
+
+      try {
+        const response = await fetch('/api/officers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          alert('Officer added successfully!');
+          closeDialog('addOfficerDialog');
+          document.getElementById('addOfficerForm').reset();
+        }
+      } catch (error) {
+        alert('Error adding officer');
+      }
+    }
+
+    // Submit category
+    async function submitCategory() {
+      const formData = {
+        name: document.getElementById('categoryName').value,
+        description: document.getElementById('categoryDescription').value
+      };
+
+      try {
+        const response = await fetch('/api/categories', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          alert('Category added successfully!');
+          closeDialog('addCategoryDialog');
+          document.getElementById('addCategoryForm').reset();
+        }
+      } catch (error) {
+        alert('Error adding category');
+      }
+    }
+
+    // Submit contact
+    async function submitContact() {
+      const formData = {
+        department: document.getElementById('contactDepartment').value,
+        name: document.getElementById('contactName').value,
+        email: document.getElementById('contactEmail').value,
+        phone: document.getElementById('contactPhone').value
+      };
+
+      try {
+        const response = await fetch('/api/contacts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          alert('Contact added successfully!');
+          closeDialog('addContactDialog');
+          document.getElementById('addContactForm').reset();
+        }
+      } catch (error) {
+        alert('Error adding contact');
+      }
+    }
+
+    // Create category chart
+    const ctx = document.getElementById('categoryChart').getContext('2d');
+    const categoryChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Waste', 'Transport', 'Water', 'Parks', 'Lighting'],
+        datasets: [{
+          data: [28, 22, 18, 17, 15],
+          backgroundColor: [
+            '#f97316',
+            '#3b82f6',
+            '#22c55e',
+            '#16a34a',
+            '#8b5cf6'
+          ],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              boxWidth: 12,
+              padding: 10,
+              font: { size: 11 }
+            }
+          }
+        }
+      }
+    });
+
+    // Initialize
+    loadComplaints();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

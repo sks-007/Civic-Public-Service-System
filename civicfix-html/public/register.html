@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - CPSS</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="auth-container">
+    <!-- Left Side - Branding -->
+    <div class="auth-left">
+      <div>
+        <a href="/" style="display: flex; align-items: center; gap: 0.625rem; text-decoration: none; color: white;">
+          <div style="width: 2.5rem; height: 2.5rem; border-radius: 0.5rem; background: rgba(255, 255, 255, 0.2); display: flex; align-items: center; justify-content: center;">
+            <i data-lucide="building-2" style="width: 1.25rem; height: 1.25rem;"></i>
+          </div>
+          <div>
+            <div style="font-size: 1.25rem; font-weight: 700; line-height: 1.2;">CPSS</div>
+            <div style="font-size: 0.75rem; opacity: 0.8;">Civic Public Service System</div>
+          </div>
+        </a>
+      </div>
+
+      <div>
+        <h1 class="text-4xl font-bold mb-4">Join Our Community</h1>
+        <p style="opacity: 0.9; font-size: 1.125rem; line-height: 1.75;">
+          Create your account to access all civic services, submit complaints, and track issues in real-time.
+        </p>
+      </div>
+
+      <div style="opacity: 0.7; font-size: 0.875rem;">
+        <p>&copy; 2026 CPSS. All rights reserved.</p>
+      </div>
+    </div>
+
+    <!-- Right Side - Form -->
+    <div class="auth-right">
+      <div style="width: 100%; max-width: 28rem;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <h2 class="text-2xl font-bold mb-2">Create Account</h2>
+          <p class="text-sm text-muted-foreground">Fill in your details to get started</p>
+        </div>
+
+        <div class="card">
+          <div class="card-content">
+            <form id="registerForm">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="form-group">
+                  <label class="form-label" for="firstName">First Name *</label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    class="form-input"
+                    required
+                    placeholder="John"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="lastName">Last Name *</label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    class="form-input"
+                    required
+                    placeholder="Doe"
+                  >
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="email">Email Address *</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-input"
+                  required
+                  placeholder="you@example.com"
+                >
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div class="form-group">
+                  <label class="form-label" for="phone">Phone Number *</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    class="form-input"
+                    required
+                    placeholder="+1 234 567 8900"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="ward">Ward *</label>
+                  <select id="ward" name="ward" class="form-select" required>
+                    <option value="">Select ward</option>
+                    <option value="Ward 1">Ward 1</option>
+                    <option value="Ward 2">Ward 2</option>
+                    <option value="Ward 3">Ward 3</option>
+                    <option value="Ward 4">Ward 4</option>
+                    <option value="Ward 5">Ward 5</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div class="form-group">
+                  <label class="form-label" for="password">Password *</label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="form-input"
+                    required
+                    placeholder="Min. 8 characters"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="confirmPassword">Confirm Password *</label>
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    class="form-input"
+                    required
+                    placeholder="Re-enter password"
+                  >
+                </div>
+              </div>
+
+              <div style="margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: start; gap: 0.5rem; cursor: pointer;">
+                  <input type="checkbox" id="terms" name="terms" required style="width: 1rem; height: 1rem; margin-top: 0.125rem;">
+                  <span class="text-sm">I agree to the <a href="#" style="color: var(--primary); text-decoration: none;">Terms of Service</a> and <a href="#" style="color: var(--primary); text-decoration: none;">Privacy Policy</a></span>
+                </label>
+              </div>
+
+              <div id="alertBox" style="display: none; margin-bottom: 1rem;"></div>
+
+              <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;" id="submitBtn">
+                <i data-lucide="user-plus" class="icon"></i>
+                Create Account
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <p class="text-center text-sm mt-4">
+          Already have an account?
+          <a href="/login" style="color: var(--primary); text-decoration: none; font-weight: 600;">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script>
+    // Redirect if already logged in
+    if (redirectIfLoggedIn()) {
+      // User is already logged in, will be redirected
+      return;
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Validate passwords match
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (password !== confirmPassword) {
+        showAlert('Passwords do not match!', 'error');
+        return;
+      }
+
+      if (password.length < 8) {
+        showAlert('Password must be at least 8 characters long!', 'error');
+        return;
+      }
+
+      const formData = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        ward: document.getElementById('ward').value,
+        password: password
+      };
+
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i data-lucide="loader-2" class="icon spinner"></i> Creating account...';
+      lucide.createIcons();
+
+      try {
+        const response = await fetch('/api/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showAlert('Account created successfully! Redirecting to login...', 'success');
+
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 2000);
+        } else {
+          throw new Error(data.error || 'Registration failed');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showAlert('Registration failed. Email may already be in use.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-lucide="user-plus" class="icon"></i> Create Account';
+        lucide.createIcons();
+      }
+    });
+
+    function showAlert(message, type) {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.className = type === 'success' ? 'alert alert-success' : 'alert alert-error';
+      alertBox.innerHTML = `
+        <i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" class="icon"></i>
+        <span>${message}</span>
+      `;
+      alertBox.style.display = 'flex';
+      lucide.createIcons();
+    }
+
+    lucide.createIcons();
+  </script>
+</body>
+</html>

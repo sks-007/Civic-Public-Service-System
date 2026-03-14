@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Complaint - CPSS</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen">
+  <div id="navbar"></div>
+
+  <main class="flex-1" style="background: linear-gradient(to bottom, var(--secondary), var(--background)); padding: 3rem 1rem;">
+    <div class="container" style="max-width: 56rem;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h1 class="text-3xl font-bold mb-2">Track Your Complaint</h1>
+        <p class="text-muted-foreground">Enter your complaint ID to view status and progress</p>
+      </div>
+
+      <!-- Search Form -->
+      <div class="card" style="margin-bottom: 2rem;">
+        <div class="card-content">
+          <form id="trackForm" style="display: flex; gap: 0.5rem;">
+            <input
+              type="text"
+              id="complaintId"
+              class="form-input"
+              placeholder="Enter Complaint ID (e.g., 123 or ABC123)"
+              required
+              style="flex: 1;"
+            >
+            <button type="submit" class="btn btn-primary">
+              <i data-lucide="search" class="icon"></i>
+              Search
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loadingState" style="display: none; text-align: center; padding: 3rem;">
+        <div class="spinner-icon spinner" style="margin: 0 auto;"></div>
+        <p class="text-muted-foreground mt-4">Searching for complaint...</p>
+      </div>
+
+      <!-- Results -->
+      <div id="resultsContainer" style="display: none;">
+        <!-- Complaint Details Card -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-header">
+            <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 0.5rem;">
+              <div>
+                <h2 class="card-title">Complaint #<span id="displayId"></span></h2>
+                <p class="card-description" id="displayCategory"></p>
+              </div>
+              <span id="displayStatus" class="badge"></span>
+            </div>
+          </div>
+          <div class="card-content">
+            <div style="margin-bottom: 1.5rem;">
+              <h3 class="font-semibold mb-2">Progress</h3>
+              <div style="margin-bottom: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                  <span class="text-sm text-muted-foreground">Completion</span>
+                  <span class="text-sm font-bold" id="progressPercent">0%</span>
+                </div>
+                <div class="progress-container">
+                  <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4" style="margin-bottom: 1.5rem;">
+              <div>
+                <p class="text-sm text-muted-foreground mb-1">Submitted By</p>
+                <p class="font-medium" id="displayName"></p>
+              </div>
+              <div>
+                <p class="text-sm text-muted-foreground mb-1">Ward/District</p>
+                <p class="font-medium" id="displayWard"></p>
+              </div>
+              <div>
+                <p class="text-sm text-muted-foreground mb-1">Priority</p>
+                <span id="displayPriority" class="badge"></span>
+              </div>
+              <div>
+                <p class="text-sm text-muted-foreground mb-1">Submitted On</p>
+                <p class="font-medium" id="displayDate"></p>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+              <p class="text-sm text-muted-foreground mb-1">Location</p>
+              <p class="font-medium" id="displayLocation"></p>
+            </div>
+
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Description</p>
+              <p id="displayDescription"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assigned Officer Card -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-header">
+            <h3 class="card-title">Assigned Officer</h3>
+          </div>
+          <div class="card-content">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div style="width: 3rem; height: 3rem; border-radius: 50%; background: linear-gradient(to bottom right, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                <i data-lucide="user" class="icon"></i>
+              </div>
+              <div>
+                <p class="font-semibold" id="officerName">Not yet assigned</p>
+                <p class="text-sm text-muted-foreground" id="officerContact"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fund Allocation Card -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-header">
+            <h3 class="card-title">Fund Allocation</h3>
+          </div>
+          <div class="card-content">
+            <div style="text-align: center;">
+              <p class="text-3xl font-bold" style="color: var(--primary);" id="fundAmount">$0</p>
+              <p class="text-sm text-muted-foreground">Allocated for resolution</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Activity Timeline</h3>
+          </div>
+          <div class="card-content">
+            <div id="timeline" style="position: relative;">
+              <!-- Timeline items will be inserted here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div id="errorState" style="display: none;">
+        <div class="alert alert-error">
+          <i data-lucide="alert-circle" class="icon"></i>
+          <span id="errorMessage">Complaint not found. Please check the ID and try again.</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="/js/utils.js"></script>
+  <script>
+    // Check for ID in URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlId = urlParams.get('id');
+    if (urlId) {
+      document.getElementById('complaintId').value = urlId;
+      searchComplaint(urlId);
+    }
+
+    // Handle form submission
+    document.getElementById('trackForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('complaintId').value.trim();
+      searchComplaint(id);
+    });
+
+    // Search complaint
+    async function searchComplaint(id) {
+      document.getElementById('loadingState').style.display = 'block';
+      document.getElementById('resultsContainer').style.display = 'none';
+      document.getElementById('errorState').style.display = 'none';
+
+      try {
+        const response = await fetch('/api/complaints/' + id);
+        const data = await response.json();
+
+        document.getElementById('loadingState').style.display = 'none';
+
+        if (data.success && data.data) {
+          displayComplaint(data.data);
+        } else {
+          showError();
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('loadingState').style.display = 'none';
+        showError();
+      }
+    }
+
+    // Display complaint
+    function displayComplaint(complaint) {
+      document.getElementById('resultsContainer').style.display = 'block';
+
+      // Basic info
+      document.getElementById('displayId').textContent = complaint.id || 'N/A';
+      document.getElementById('displayCategory').textContent = complaint.category || 'General';
+
+      // Status
+      const statusColors = {
+        'Pending': 'badge-warning',
+        'In Progress': 'badge-primary',
+        'Resolved': 'badge-success',
+        'Rejected': 'badge-destructive'
+      };
+      const statusBadge = document.getElementById('displayStatus');
+      statusBadge.textContent = complaint.status || 'Pending';
+      statusBadge.className = 'badge ' + (statusColors[complaint.status] || 'badge-muted');
+
+      // Progress
+      const progress = parseInt(complaint.progress) || 0;
+      document.getElementById('progressPercent').textContent = progress + '%';
+      document.getElementById('progressBar').style.width = progress + '%';
+
+      // Details
+      document.getElementById('displayName').textContent = complaint.fullname || complaint.full_name || 'Anonymous';
+      document.getElementById('displayWard').textContent = complaint.ward || complaint.district || 'N/A';
+      document.getElementById('displayDate').textContent = formatDate(complaint.created_at);
+      document.getElementById('displayLocation').textContent = complaint.location || complaint.location_address || 'Not specified';
+      document.getElementById('displayDescription').textContent = complaint.description || 'No description provided';
+
+      // Priority
+      const priorityColors = {
+        'High': 'badge-destructive',
+        'Medium': 'badge-warning',
+        'Low': 'badge-muted'
+      };
+      const priorityBadge = document.getElementById('displayPriority');
+      priorityBadge.textContent = complaint.priority || 'Medium';
+      priorityBadge.className = 'badge ' + (priorityColors[complaint.priority] || 'badge-muted');
+
+      // Officer (placeholder - would come from API)
+      if (complaint.assigned_officer) {
+        document.getElementById('officerName').textContent = complaint.assigned_officer;
+        document.getElementById('officerContact').textContent = 'officer@cpss.gov';
+      }
+
+      // Fund allocation (placeholder)
+      const fundAmount = complaint.fund_allocation || Math.floor(Math.random() * 5000 + 1000);
+      document.getElementById('fundAmount').textContent = '$' + fundAmount.toLocaleString();
+
+      // Timeline
+      displayTimeline(complaint);
+
+      lucide.createIcons();
+    }
+
+    // Display timeline
+    function displayTimeline(complaint) {
+      const timeline = document.getElementById('timeline');
+      const events = [
+        { date: complaint.created_at, title: 'Complaint Submitted', icon: 'file-text', color: 'var(--primary)' },
+        { date: complaint.created_at, title: 'Under Review', icon: 'eye', color: 'var(--primary)', active: complaint.status !== 'Pending' },
+        { date: null, title: 'In Progress', icon: 'loader', color: 'var(--warning)', active: complaint.status === 'In Progress' || complaint.status === 'Resolved' },
+        { date: null, title: 'Resolved', icon: 'check-circle', color: 'var(--success)', active: complaint.status === 'Resolved' }
+      ].filter(e => e.active !== false);
+
+      timeline.innerHTML = events.map((event, index) => `
+        <div style="display: flex; gap: 1rem; margin-bottom: ${index < events.length - 1 ? '1.5rem' : '0'};">
+          <div style="display: flex; flex-direction: column; align-items: center;">
+            <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background-color: ${event.active ? event.color : 'var(--muted)'}; display: flex; align-items: center; justify-content: center; color: white;">
+              <i data-lucide="${event.icon}" class="icon-sm"></i>
+            </div>
+            ${index < events.length - 1 ? '<div style="width: 2px; height: 100%; background-color: var(--border); margin-top: 0.5rem;"></div>' : ''}
+          </div>
+          <div style="flex: 1; padding-top: 0.375rem;">
+            <p class="font-semibold">${event.title}</p>
+            ${event.date ? '<p class="text-xs text-muted-foreground">' + formatDate(event.date) + '</p>' : '<p class="text-xs text-muted-foreground">Pending</p>'}
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    // Show error
+    function showError() {
+      document.getElementById('errorState').style.display = 'block';
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+  </script>
+</body>
+</html>

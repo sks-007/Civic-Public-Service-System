@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - CPSS</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="auth-container">
+    <!-- Left Side - Branding -->
+    <div class="auth-left">
+      <div>
+        <a href="/" style="display: flex; align-items: center; gap: 0.625rem; text-decoration: none; color: white;">
+          <div style="width: 2.5rem; height: 2.5rem; border-radius: 0.5rem; background: rgba(255, 255, 255, 0.2); display: flex; align-items: center; justify-content: center;">
+            <i data-lucide="building-2" style="width: 1.25rem; height: 1.25rem;"></i>
+          </div>
+          <div>
+            <div style="font-size: 1.25rem; font-weight: 700; line-height: 1.2;">CPSS</div>
+            <div style="font-size: 0.75rem; opacity: 0.8;">Civic Public Service System</div>
+          </div>
+        </a>
+      </div>
+
+      <div>
+        <h1 class="text-4xl font-bold mb-4">Welcome Back</h1>
+        <p style="opacity: 0.9; font-size: 1.125rem; line-height: 1.75;">
+          Sign in to access your account, track complaints, and manage civic services efficiently.
+        </p>
+      </div>
+
+      <div style="opacity: 0.7; font-size: 0.875rem;">
+        <p>&copy; 2026 CPSS. All rights reserved.</p>
+      </div>
+    </div>
+
+    <!-- Right Side - Form -->
+    <div class="auth-right">
+      <div style="width: 100%; max-width: 28rem;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <h2 class="text-2xl font-bold mb-2">Sign In</h2>
+          <p class="text-sm text-muted-foreground">Enter your credentials to access your account</p>
+        </div>
+
+        <div class="card">
+          <div class="card-content">
+            <form id="loginForm">
+              <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-input"
+                  required
+                  placeholder="you@example.com"
+                  value="user@demo.com"
+                >
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  class="form-input"
+                  required
+                  placeholder="Enter your password"
+                  value="demo123"
+                >
+              </div>
+
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                  <input type="checkbox" id="remember" name="remember" style="width: 1rem; height: 1rem;">
+                  <span class="text-sm">Remember me</span>
+                </label>
+                <a href="#" class="text-sm" style="color: var(--primary); text-decoration: none;">Forgot password?</a>
+              </div>
+
+              <div style="padding: 0.75rem; background-color: rgba(26, 86, 219, 0.1); border-radius: var(--radius); margin-bottom: 1rem;">
+                <p class="text-xs text-muted-foreground" style="text-align: center;">
+                  <i data-lucide="info" class="icon-sm" style="display: inline; vertical-align: middle;"></i>
+                  Demo: user@demo.com / demo123
+                </p>
+              </div>
+
+              <div id="alertBox" style="display: none; margin-bottom: 1rem;"></div>
+
+              <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;" id="submitBtn">
+                <i data-lucide="log-in" class="icon"></i>
+                Sign In
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <p class="text-center text-sm mt-4">
+          Don't have an account?
+          <a href="/register" style="color: var(--primary); text-decoration: none; font-weight: 600;">Create one</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script>
+    // Redirect if already logged in
+    if (redirectIfLoggedIn()) {
+      // User is already logged in, will be redirected
+      return;
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = {
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+      };
+
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i data-lucide="loader-2" class="icon spinner"></i> Signing in...';
+      lucide.createIcons();
+
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showAlert('Login successful! Redirecting...', 'success');
+
+          // Store session
+          localStorage.setItem('cpss-user', JSON.stringify(data.data));
+
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1500);
+        } else {
+          throw new Error(data.error || 'Login failed');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showAlert('Invalid credentials. Please try again.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-lucide="log-in" class="icon"></i> Sign In';
+        lucide.createIcons();
+      }
+    });
+
+    function showAlert(message, type) {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.className = type === 'success' ? 'alert alert-success' : 'alert alert-error';
+      alertBox.innerHTML = `
+        <i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" class="icon"></i>
+        <span>${message}</span>
+      `;
+      alertBox.style.display = 'flex';
+      lucide.createIcons();
+    }
+
+    lucide.createIcons();
+  </script>
+</body>
+</html>
