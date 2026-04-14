@@ -44,34 +44,37 @@ export default function AIChatbotPage() {
   const [isTyping, setIsTyping] = useState(false)
   const chatEndRef = useRef<HTMLDivElement>(null)
 
-  const simulateResponse = (userMessage: string) => {
+  const sendMessage = async (userMessage: string) => {
     setIsTyping(true)
-    setTimeout(() => {
-      let response = ""
-      const lower = userMessage.toLowerCase()
-      if (lower.includes("complaint") && lower.includes("submit")) {
-        response = "To submit a complaint:\n\n1. Go to the 'Submit Complaint' page from the navigation\n2. Fill in your personal details (name, email, phone)\n3. Select the service category (Waste, Transportation, etc.)\n4. Describe the issue in detail\n5. Upload photos as evidence\n6. Our AI will verify the images automatically right in the form\n7. Click submit and you'll receive a tracking ID\n\nWould you like me to take you to the complaint form?"
-      } else if (lower.includes("track")) {
-        response = "You can track your complaint progress by:\n\n1. Going to 'Track Complaints' in the navigation\n2. Enter your complaint ID (e.g., #CMP-2026-0847)\n3. You'll see the current status, assigned officer, allocated funds, and timeline\n\nWould you like to check a specific complaint?"
-      } else if (lower.includes("service") || lower.includes("center")) {
-        response = "We offer 5 main service categories:\n\n- Waste Management - Public Works Dept, 200 Civic Center Dr\n- Transportation - Transit Authority, 150 Transit Blvd\n- Water & Sewage - Water Authority, 300 Reservoir Rd\n- Parks & Recreation - Parks Dept, 75 Greenway Ave\n- Street Lighting - Electrical Services, 100 Power Lane\n\nEach department has dedicated staff ready to help. Which service do you need?"
-      } else if (lower.includes("streetlight") || lower.includes("light")) {
-        response = "To report a streetlight outage:\n\n1. Go to Submit Complaint\n2. Select 'Street Lighting' as the category\n3. Provide the exact location or nearest address\n4. Upload a photo of the dark area if possible\n5. Our team typically responds within 24-48 hours\n\nThe Electrical Services department handles all street lighting issues at 100 Power Lane."
-      } else {
-        response = "Thank you for your message. I can help you with:\n\n- Navigating the civic services platform\n- Submitting and tracking complaints\n- Finding service center locations\n- Understanding complaint procedures\n\nPlease ask me anything specific about these services!"
-      }
-
+    try {
+      const response = await fetch("/api/chatbot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userMessage, history: messages }),
+      })
+      const data = await response.json()
       setMessages((prev) => [
         ...prev,
         {
           id: Date.now().toString(),
           role: "assistant",
-          content: response,
+          content: data.success ? data.response : "Sorry, I couldn't process your message. Please try again.",
           timestamp: new Date(),
         },
       ])
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          role: "assistant",
+          content: "Sorry, I'm having trouble connecting right now. Please try again in a moment.",
+          timestamp: new Date(),
+        },
+      ])
+    } finally {
       setIsTyping(false)
-    }, 1500)
+    }
   }
 
   const handleSend = () => {
@@ -84,7 +87,7 @@ export default function AIChatbotPage() {
     }
     setMessages((prev) => [...prev, userMessage])
     setInput("")
-    simulateResponse(input)
+    sendMessage(input)
   }
 
   return (
@@ -185,18 +188,15 @@ export default function AIChatbotPage() {
                       variant="outline"
                       className="h-auto justify-start gap-2 whitespace-normal text-left text-xs"
                       onClick={() => {
-                        setInput(action.label)
-                        setTimeout(() => {
-                          const userMessage: Message = {
-                            id: Date.now().toString(),
-                            role: "user",
-                            content: action.label,
-                            timestamp: new Date(),
-                          }
-                          setMessages((prev) => [...prev, userMessage])
-                          setInput("")
-                          simulateResponse(action.label)
-                        }, 100)
+                        const userMessage: Message = {
+                          id: Date.now().toString(),
+                          role: "user",
+                          content: action.label,
+                          timestamp: new Date(),
+                        }
+                        setMessages((prev) => [...prev, userMessage])
+                        setInput("")
+                        sendMessage(action.label)
                       }}
                     >
                       <action.icon className="h-4 w-4 shrink-0 text-primary" />

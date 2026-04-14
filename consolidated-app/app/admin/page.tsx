@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -145,13 +144,11 @@ export default function AdminPage() {
   const fetchComplaints = async () => {
     setIsLoading(true)
     try {
-      const { data, error } = await supabase
-        .from("complaints")
-        .select("*")
-        .order("created_at", { ascending: false })
-
-      if (error) throw error
-      setComplaints(data || [])
+      const response = await fetch("/api/complaints")
+      const data = await response.json()
+      if (data.success) {
+        setComplaints(data.data || [])
+      }
     } catch (error) {
       console.error("Error fetching complaints:", error)
     } finally {
@@ -178,19 +175,13 @@ export default function AdminPage() {
     e.preventDefault()
     setIsAddingOfficer(true)
     try {
-      const { error } = await supabase
-        .from("officers")
-        .insert([
-          {
-            name: newOfficer.name,
-            email: newOfficer.email,
-            phone: newOfficer.phone,
-            address: newOfficer.address,
-            is_active: true
-          }
-        ])
-
-      if (error) throw error
+      const response = await fetch("/api/officers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...newOfficer, is_active: true }),
+      })
+      const data = await response.json()
+      if (!data.success) throw new Error(data.error || "Failed to add officer")
 
       setNewOfficer({ name: "", email: "", phone: "", address: "" })
       setIsAddOfficerOpen(false)
@@ -207,15 +198,13 @@ export default function AdminPage() {
     e.preventDefault()
     setIsAddingCategory(true)
     try {
-      const { error } = await supabase
-        .from("service_categories")
-        .insert([
-          {
-            name: newCategory.name,
-          }
-        ])
-
-      if (error) throw error
+      const response = await fetch("/api/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newCategory.name }),
+      })
+      const data = await response.json()
+      if (!data.success) throw new Error(data.error || "Failed to add category")
 
       setNewCategory({ name: "" })
       setIsAddCategoryOpen(false)
@@ -232,18 +221,13 @@ export default function AdminPage() {
     e.preventDefault()
     setIsAddingContact(true)
     try {
-      const { error } = await supabase
-        .from("authority_contacts")
-        .insert([
-          {
-            fullname: newContact.fullname,
-            email: newContact.email,
-            phone: newContact.phone,
-            department: newContact.department,
-          }
-        ])
-
-      if (error) throw error
+      const response = await fetch("/api/authority-contacts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...newContact }),
+      })
+      const data = await response.json()
+      if (!data.success) throw new Error(data.error || "Failed to add contact")
 
       setNewContact({ fullname: "", email: "", phone: "", department: "" })
       setIsAddContactOpen(false)
